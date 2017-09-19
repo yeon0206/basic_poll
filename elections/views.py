@@ -1,9 +1,13 @@
-from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
+from django.http import(
+    HttpResponse, HttpResponseRedirect,
+    HttpResponseNotFound, Http404
+    )
 from .models import Candidate, Poll, Choice
 import datetime
 from django.db.models import Sum
 # Create your views here.
+from django.utils import timezone
 
 
 def index(request):
@@ -16,12 +20,22 @@ def index(request):
     #     str += "{}기호{}번{}<BR>".format(candidate.name,
     #     candidate.party_number,candidate.area)
     #     str += candidate.introduction+ "<P>"
-    # return HttpResponse(str)
+    # return HttpResponse(str) 템플릿을 거치지 않고 바로 http에서 반응
     return render(request, 'elections/index.html', ctx)
+
+def candidates(request, name):
+    candidate = get_object_or_404(Candidate, name = name)
+    # try:
+    #     candidate = Candidate.objects.get(name=name)
+    # except:
+    #     # return HttpResponseNotFound("없는 페이지 입니다.")
+    #     raise Http404
+    return HttpResponse(candidate.name)
 
 def areas(request, area): #어떤지역에대한 url요청인지확인, 여기서는 area를 매개변수로 전달받음
     # return HttpResponse(area)
-    today = datetime.datetime.now()
+    # today = datetime.datetime.now()
+    today = timezone.now()
     try:
         poll = Poll.objects.get(
             area = area,

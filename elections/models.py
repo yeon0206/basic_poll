@@ -15,8 +15,10 @@ class Poll(models.Model):
     end_date = models.DateTimeField()
     area = models.CharField(max_length=15)
 
+    def __str__(self):
+        return self.area
+
 class Choice(models.Model):
     poll = models.ForeignKey(Poll)
     candidate = models.ForeignKey(Candidate)
     votes = models.IntegerField(default=0)
-    
